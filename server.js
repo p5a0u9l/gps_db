@@ -1,5 +1,6 @@
-var net = require('net');
+const net = require('net');
 const crypto = require('crypto');
+const fs = require('fs');
 
 var gps_db = require('./gps_db');
 gps = new gps_db('./client_gps.db');
@@ -35,37 +36,37 @@ function handle(sock) {
 
         if (validate(data)) {
             obj = JSON.parse(data);
+            response.result = "fail"; // assume the best
 
             var responses = {
-
-                response.status = "success"; // assume the best
-
                 newkey: function(obj) {
-                    const buf = crypto.randomBytes(64);
-                    response.newkey = buf.toString();
+                    const buf = crypto.randomBytes(48);
+                    response.newkey = buf.hexSlice();
+                    gps.new_client(response.newkey);
                     response.print = "A new client entry was created. " +
                                      "Please use the provided key for future transactions.";
-
                     console.log("\tACTION: new client")
+                    response.result = "success";
                 },
 
                 put: function(obj) {
                     try {
-                        if (gps.id_from_key(obj.client_key)) {
-                            gps.new_record(obj.payload);
+                        if (gps.new_record(obj)) {
+                            response.result = "success";
+                            response.print = "Record inserted into client's table";
                             console.log("\tACTION: put --> succeed.");
-                            response.status = "success";
+                        } else {
+                            response.print = "Client Id not found in clients table. Have you registered?";
+                            console.log("\tACTION: put --> fail.");
                         }
-
                     } catch(err) {
-                        response.print = "put failed";
-                        console.log("\tACTION: put --> fail.");
+                        response.print = err;
+                        console.log("\tACTION: put --> error.");
                     }
                 },
 
                 get: function(obj) {
                     console.log("\tACTION: get");
-                    }
                 }
             }
 

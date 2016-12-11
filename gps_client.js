@@ -9,10 +9,7 @@ var cfg = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
 // parse inputs
 ACTION = process.argv[2];
 
-function has_key() {
-    // check for db key file
-}
-
+// function to send json to server
 function send_json(obj) {
     var client = new net.Socket();
 
@@ -28,12 +25,13 @@ function send_json(obj) {
     });
 }
 
+// function to consume all the gps records in a file
 function consume_geo(fpath) {
     const rl = readline.createInterface({ input: fs.createReadStream(fpath), });
     obj = {};
 
-    if (fs.existsSync(cfg.CLIENT_KEY_FILENAME) {
-        obj.client_key = fs.readFileSync(cfg.CLIENT_KEY_FILENAME);
+    if (fs.existsSync(cfg.CLIENT_KEY_FILENAME)) {
+        obj.client_key = fs.readFileSync(cfg.CLIENT_KEY_FILENAME).toString();
     } else {
         throw new Error("No client key found... first, issue node gps_client.js register");
     }
