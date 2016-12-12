@@ -1,7 +1,5 @@
 # GPS DATA CLIENT and SERVER
 
-#### _DESCRIPTION_
-
 ## Installation
 
 ### Dependencies
@@ -48,6 +46,27 @@ Assuming you have a local file called `my_gps_file.json`, issuing
     $ node gps_client.js consume ./my_gps_file.json
 
 will stream the file contents to the server and store them in a `gps_records` table indexed by your unqique client id.
+
+##### gps record format
+
+The server expects messages formatted by `gpsd` a common Linux/FreeBSD daemon that receives data from GPS receivers. The messages should follow contain the following fields
+
+    {
+        "class":"TPV",
+        "mode":3,
+        "time":"2016-12-07T01:58:33.000Z",
+        "lat":47.421816667,
+        "lon":-122.251965000,
+        "alt":11.900,
+        "speed":0.005,
+    }
+
+A sample history of records is found under (sample\_data/record\_stream.json)[./sample\_data/record\_stream.json]
+
+##### Testing `consume`
+
+The server/client registration can be tested using
+    $ node gps_client.js consume ./sample_data/record_stream.json
 
 #### Fetching gps history
 Assuming you have a local file called `my_gps_file.json`, issuing
