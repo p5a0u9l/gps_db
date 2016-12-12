@@ -1,62 +1,51 @@
 // requirements
-const readline = require('readline');
 const fs = require('fs');
 const net = require('net');
 
 // load config file
 var cfg = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
-
-// parse inputs
 ACTION = process.argv[2];
 
-// function to send json to server
-function send_json(obj) {
-    var client = new net.Socket();
+const client = net.createConnection(
+        {port: cfg.PORT_NUMBER, host: cfg.SERVER_IP}, () => {
+    console.log("connected to " + cfg.SERVER_IP + ":" + cfg.PORT_NUMBER);
+    if (ACTION == 'register') {
+        console.log('processing new key register');
+        send_json({command: "newkey"});
+    } else if (ACTION == 'consume') {
+        push_records(process.argv[3]);
+    };
+}).setTimeout(100, () => {client.end()});
 
-    client.connect(cfg.PORT_NUMBER, cfg.SERVER_IP, function() {
-        client.write(JSON.stringify(obj));
-    });
+client.on('data', (data) => {
+    obj = JSON.parse(data);
+    if (obj.newkey) fs.writeFileSync('./.gps_db_client_key', obj.newkey);
+    console.log(JSON.stringify(obj, null, 4));
+    client.end();
+});
 
-    client.on('data', function(data) {
-        obj = JSON.parse(data);
-        if (obj.newkey) fs.writeFileSync('./.gps_db_client_key', obj.newkey);
-        console.log(JSON.stringify(obj, null, 4));
-        client.destroy(); // kill client after server's response
-    });
-}
+client.on('end', () => {console.log('disconnected from server');});
 
-// function to consume all the gps records in a file
-function consume_geo(fpath) {
-    const rl = readline.createInterface({ input: fs.createReadStream(fpath), });
-    obj = {};
+function push_records(fpath) {
+    obj = {command: "put"};
 
+    // read the JSON records into an array
+    obj.payload = fs.readFileSync(fpath).utf8Slice();
+
+    // read in the local client key
     if (fs.existsSync(cfg.CLIENT_KEY_FILENAME)) {
         obj.client_key = fs.readFileSync(cfg.CLIENT_KEY_FILENAME).toString();
     } else {
         throw new Error("No client key found... first, issue node gps_client.js register");
     }
 
-    rl.on('line', function (line) {
-        try {
-            object = JSON.parse(line);
-            if (object.class == "TPV" && 'mode' in object && object.mode == 3) {
-                obj.command = "put";
-                obj.payload = object;
-                send_json(obj);
-            }
-        } catch(err) {
-            console.log(err);
-        }
-    });
+    // send record to database
+    send_json(obj);
 }
 
-if (ACTION == 'register') {
-    send_json({command: "newkey"});
-} else if (ACTION == 'consume') {
-    if (process.argv.length >= 3) {
-        FPATH = process.argv[3];
-    } else {
-        throw new Error("Please provide a path to a geojson formatted file");
-    }
-    consume_geo(FPATH);
+function send_json(obj) {
+    console.log('sending...');
+    client.write(JSON.stringify(obj), () => {
+        console.log('send is complete');
+    });
 }

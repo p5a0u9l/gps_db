@@ -1,5 +1,6 @@
 {
     "SERVER_IP": "192.168.1.106",
     "PORT_NUMBER": 8080,
-    "CLIENT_KEY_FILENAME": ".gps_db_client_key"
+    "CLIENT_KEY_FILENAME": ".gps_db_client_key",
+    "DATABASE_NAME": "client_gps.db"
 }
