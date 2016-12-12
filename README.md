@@ -61,7 +61,7 @@ The server expects messages formatted by `gpsd` a common Linux/FreeBSD daemon th
         "speed":0.005,
     }
 
-A sample history of records is found under (sample_data/record_stream.json)[./sample_data/record_stream.json]
+A sample history of records is found under [sample\_data/record\_stream.json](sample_data/record_stream.json)
 
 ##### Testing `consume`
 
