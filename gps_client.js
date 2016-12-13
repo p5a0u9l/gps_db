@@ -14,17 +14,43 @@ const client = net.createConnection(
         send_json({command: "newkey"});
     } else if (ACTION == 'consume') {
         push_records(process.argv[3]);
+    } else if (ACTION == 'fetch') {
+        fetch_records();
     };
-}).setTimeout(100, () => {client.end()});
+}).setTimeout(1000, () => {client.end()});
 
-client.on('data', (data) => {
-    obj = JSON.parse(data);
-    if (obj.newkey) fs.writeFileSync('./.gps_db_client_key', obj.newkey);
-    console.log(JSON.stringify(obj, null, 4));
-    client.end();
+client.on('data', (chunk) => {
+    let data = '';
+
+    try {
+        var obj = JSON.parse(chunk);
+        if (obj.newkey) fs.writeFileSync('./.gps_db_client_key', obj.newkey);
+        console.log(JSON.stringify(obj, null, 4));
+        client.end();
+    } catch(err) {
+        data += chunk;
+    }
+}).on('end', () => {
+    try {
+        var obj = JSON.parse(data);
+        if (typeof(obj.result) == 'object') fs.writeFileSync('./gps_db_fetch.json', obj.response);
+        console.log('disconnected from server');
+    } catch(err) {
+    }
 });
 
-client.on('end', () => {console.log('disconnected from server');});
+function fetch_records() {
+    obj = {command: "get"};
+
+    // read in the local client key
+    if (fs.existsSync(cfg.CLIENT_KEY_FILENAME)) {
+        obj.client_key = fs.readFileSync(cfg.CLIENT_KEY_FILENAME).toString();
+    } else {
+        throw new Error("No client key found... first, issue node gps_client.js register");
+    }
+
+    send_json(obj);
+}
 
 function push_records(fpath) {
     obj = {command: "put"};

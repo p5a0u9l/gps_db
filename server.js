@@ -20,13 +20,24 @@ function handle_newkey() {
 
 function handle_put(obj) {
     try {
-        gps.new_record(obj);
-        response.result = "success";
+        response.result = gps.new_record(obj);
         response.print = "Records inserted into client's table";
         console.log("\tACTION: put --> succeed.");
     } catch(err) {
-        response.print = err;
+        response.print = err.message;
         console.log("\tACTION: put --> error." + err.message);
+    }
+    return response;
+}
+
+function handle_get(obj) {
+    try {
+        response.result = gps.fetch_all(obj);
+        response.print = "Records retrieved";
+        console.log("\tACTION: get --> succeed.");
+    } catch(err) {
+        response.print = err;
+        console.log("\tACTION: get --> error." + err.message);
     }
     return response;
 }
@@ -37,7 +48,7 @@ function handle_response(sock, obj) {
 
         put: (obj) => { response = handle_put(obj); },
 
-        get: (obj) => { console.log("\tACTION: get"); }
+        get: (obj) => { response = handle_get(obj); }
     }
 
     if (responses[obj.command]) {
@@ -70,6 +81,7 @@ var server = net.createServer( (sock) => {
         try {
             handle_response(sock, JSON.parse(data));
         } catch(err) {
+            console.log(err.message);
         }
     });
 });

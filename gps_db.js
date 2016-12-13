@@ -43,12 +43,14 @@ function valid_geo(obj) {
 
 function consume(obj, client_id) {
     records = obj.payload.split('\n');
+    rejected = 0;
 
     db.serialize( () => {
         for (var i = 0; i < records.length; i++) {
             try {
                 gps = JSON.parse(records[i]);
             } catch(err) {
+                rejected += 1;
                 continue;
             }
             if (valid_geo(gps)) {
@@ -61,6 +63,16 @@ function consume(obj, client_id) {
             }
         }
     });
+    return {rejected: rejected, inserted: records.length - rejected};
+}
+
+function retrieve(obj, client_id) {
+    var result = {};
+    var q = util.format("SELECT utc_time, lat_deg, lon_deg, alt_m, speed " +
+            "FROM gps_records WHERE client_id = %d;", client_id);
+    db.all(q, (err, rows) => { result.payload = rows; });
+
+    return result;
 }
 
 var gps_db = {
@@ -74,11 +86,25 @@ var gps_db = {
                 obj.client_key);
         db.all(q, (err, row) => {
             if (row[0].client_id) {
-                consume(obj, row[0].client_id);
+                result = consume(obj, row[0].client_id);
             } else {
                 console.log("could not find " + obj.client_key);
             }
         });
+        return result;
+    },
+
+    fetch_all: (obj) => {
+        var q = util.format("SELECT client_id FROM clients WHERE client_key = '%s';",
+                obj.client_key);
+        db.all(q, (err, row) => {
+            if (row[0].client_id) {
+                result = retrieve(obj, row[0].client_id);
+            } else {
+                console.log("could not find " + obj.client_key);
+            }
+        });
+        return result;
     }
 }
 

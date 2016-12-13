@@ -66,9 +66,11 @@ A sample history of records is found under [sample\_data/record\_stream.json](sa
 ##### Testing `consume`
 
 The server/client registration can be tested using
+
     $ node gps_client.js consume ./sample_data/record_stream.json
 
 #### Fetching gps history
+
 Assuming you have a local file called `my_gps_file.json`, issuing
 
     $ node gps_client.js consume ./my_gps_file.json
