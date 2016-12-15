@@ -5,7 +5,9 @@
 ## Dependencies
 
 o [node.js](https://nodejs.org/en/download/)
+
 o [npm](https://www.npmjs.com/)
+
 o [sqlite](https://sqlite.org/)
 
 The node.js package manager, `npm`, is recommended to install module dependencies. The server database is managed with `sqlite3`
