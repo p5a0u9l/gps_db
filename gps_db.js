@@ -88,6 +88,8 @@ function retrieve(obj, client_id) {
 }
 
 var gps_db = {
+    db: db,
+
     open: () => {
         db = new sql.Database(cfg.DATABASE_NAME, (err) => {
             console.log('\t\t\tdatabase opened...');

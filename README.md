@@ -45,11 +45,11 @@ Assuming you have a local file called `my_gps_file.json`, issuing
 
     $ node gps_client.js consume ./my_gps_file.json
 
-will stream the file contents to the server and store them in a `gps_records` table indexed by your unqique client id.
+will stream the file contents to the server and store them in a `gps_records` table indexed by your unique client id.
 
 ##### gps record format
 
-The server expects messages formatted by `gpsd` a common Linux/FreeBSD daemon that receives data from GPS receivers. The messages should follow contain the following fields
+The server expects messages formatted by `gpsd`, a common Linux/FreeBSD daemon that receives data from GPS receivers. The messages should follow contain the following fields,
 
     {
         "class":"TPV",
@@ -61,7 +61,7 @@ The server expects messages formatted by `gpsd` a common Linux/FreeBSD daemon th
         "speed":0.005,
     }
 
-A sample history of records is found under [sample\_data/record\_stream.json](sample_data/record_stream.json)
+A sample history of records is found under [record_stream.json](sample_data/record_stream.json)
 
 ##### Testing `consume`
 
@@ -71,11 +71,33 @@ The server/client registration can be tested using
 
 #### Fetching gps history
 
-Assuming you have a local file called `my_gps_file.json`, issuing
+Issuing the command
 
-    $ node gps_client.js consume ./my_gps_file.json
+    $ node gps_client.js fetch
 
-will stream the file contents to the server and store them in a `gps_records` table indexed by your unqique client id.
+will fetch the entire history indexed by your key and write them to the local JSON file called out in `config.json`.
+
+## Client Use Case Example
+
+The following walks through a typical `gps_db` use case, assuming the necessary dependencies are already installed.
+
+The server application for this example is running on AWS at slkdfjl.sdljfs.kdjfkj
+
+### Set up
+    $ git clone https://github.com/p5a0u9l/gps_db # clones the repository
+    $ cd gps_db
+    $ vim config.json # edit the file to reflect the AWS SERVER_IP
+
+### First client
+    $ node gps_client.js register # registers your key with server
+    $ node gps_client.js consume sample_data/record_stream01.json # push a sample set of GPS records
+    $ node gps_client.js consume sample_data/record_stream02.json # push a sample set of GPS records
+    $ node gps_client.js fetch # retrieve the entire history
+
+### Second client
+    $ node gps_client.js register # registers your key with server
+    $ node gps_client.js consume sample_data/record_stream01.json # push a sample set of GPS records
+    $ node gps_client.js fetch # retrieve the entire history
 
 ## Raspberry Pi Use Case
 
