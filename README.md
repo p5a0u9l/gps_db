@@ -1,6 +1,6 @@
 # GPS DATA CLIENT and SERVER
 
-GPS Data client and Server implemented in node.js with Raspberry Pi GPS Data Logger Use-Case
+GPS Data client and Server implemented in node.js with Raspberry Pi GPS Data Logger Use Case
 
 # Installation
 
@@ -87,7 +87,7 @@ Issuing the command
 
 will fetch the entire history indexed by your key and write them to the local JSON file called out in `config.json`.
 
-# Client Use-Case Example
+# Typical Client Use Case
 
 The following walks through a typical `gps_db` use case, assuming the necessary dependencies are already installed.
 
@@ -112,7 +112,7 @@ The server application for this example is running on AWS at slkdfjl.sdljfs.kdjf
     $ node gps_client.js consume sample_data/record_stream01.json # push a sample set of GPS records
     $ node gps_client.js fetch # retrieve the entire history
 
-# GPS Data-Logging Use-Case
+# GPS Data-Logging Use Case
 
 ### _abstract_
 This mini-project implements a simple GPS data-logging system to record position, time, and velocity during my morning and evening commutes from Maple Valley, WA, to Kent, WA, and back.
@@ -125,3 +125,5 @@ The system is powered-up at the beginning of a trip by connecting to a battery a
 
 ## Data Download
 At the end of each day, the system is connected to a home network via a USB Wi-Fi adapter. A second, very simple `systemd` service is enabled, which listens for a network connection event. On connection, it synchronizes any on-board GPS logs with a remote server running on [AWS](https://aws.amazon.com/).
+
+![sample trip](sample_trip.png)
