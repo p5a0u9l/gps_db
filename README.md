@@ -7,9 +7,7 @@ GPS Data client and Server implemented in node.js with Raspberry Pi GPS Data Log
 ## Dependencies
 
 * [node.js](https://nodejs.org/en/download/)
-
 * [npm](https://www.npmjs.com/)
-
 * [sqlite](https://sqlite.org/)
 
 The node.js package manager, `npm`, is recommended to install module dependencies. The server database is managed with `sqlite3`
@@ -27,11 +25,8 @@ For installation, refer to the instructions for your OS on the installation page
 `gps_db` comes with a `config.json` file with modifiable entries for
 
 * `SERVER_IP`
-
 * `PORT_NUMBER`
-
 * `CLIENT_KEY_FILENAME`
-
 * `DATABASE_NAME`
 
 # Usage Overview
