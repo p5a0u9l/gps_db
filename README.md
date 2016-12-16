@@ -91,13 +91,12 @@ will fetch the entire history indexed by your key and write them to the local JS
 
 The following walks through a typical `gps_db` use case, assuming the necessary dependencies are already installed.
 
-The server application for this example is running on AWS at slkdfjl.sdljfs.kdjfkj
+The server application for this example is running an EC2 instance on AWS. The `config.json` file currently points to the server.
 
 ## Set up
 
     $ git clone https://github.com/p5a0u9l/gps_db # clones the repository
     $ cd gps_db
-    $ vim config.json # edit the file to reflect the AWS SERVER_IP
 
 ## First client
 
@@ -127,3 +126,27 @@ The system is powered-up at the beginning of a trip by connecting to a battery a
 At the end of each day, the system is connected to a home network via a USB Wi-Fi adapter. A second, very simple `systemd` service is enabled, which listens for a network connection event. On connection, it synchronizes any on-board GPS logs with a remote server running on [AWS](https://aws.amazon.com/).
 
 ![sample trip](sample_trip.png)
+
+# Project Review
+
+This section contains a review of the homework assignment for UW EE590 - Advanced Embedded Systems - that initiated this project.
+
+## Client/Server Caveat
+
+### Problems
+
+1. The `node` API to `sqlite3` seems slower than I anticipated. It may be the implementation, although I tried a few different strategies.
+
+2. The asynchronous nature of `node` causes the server to respond before the disk write is complete.
+
+### Fixes
+
+1. After pushing the file under `sample_data` or files of similar size, give the server about 30 sec. to a minute to completely write the records to disk.
+
+2. For the second issue, issuing `fetch` a second time will flush the server responses and write the gps records to the file.
+
+## Extensions
+
+This project could be extended first by correctly handling events on the server side such that responses are delayed until are records are written to disk.
+
+Another extension would be developing the visualization of gps data.
