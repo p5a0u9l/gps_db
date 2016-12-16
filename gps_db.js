@@ -50,7 +50,7 @@ function consume(obj, client_id) {
     records = obj.payload.split('\n');
     rejected = 0;
 
-    db.serialize( () => {
+    db.parallelize( () => {
         for (var i = 0; i < records.length; i++) {
             try {
                 gps = JSON.parse(records[i]);

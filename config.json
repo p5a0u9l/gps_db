@@ -1,5 +1,5 @@
 {
-    "SERVER_IP": "192.168.1.104",
+    "SERVER_IP": "ec2-35-164-106-247.us-west-2.compute.amazonaws.com",
     "PORT_NUMBER": 8080,
     "CLIENT_KEY_FILENAME": ".gps_db_client_key",
     "DATABASE_NAME": "client_gps.db"
