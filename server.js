@@ -19,8 +19,7 @@ function handle_newkey() {
 function handle_put(obj) {
     try {
         response.result = gps.new_record(obj);
-        response.print = util.format("%d records inserted into client's table",
-                response.result.inserted);
+        response.print = "records inserted into client's table";
         console.log("\tACTION: put --> succeed.");
     } catch(err) {
         response.print = err.message;
@@ -32,7 +31,7 @@ function handle_put(obj) {
 function handle_get(obj) {
     try {
         response.result = gps.fetch_all(obj);
-        response.print = util.format("%d records retrieved", response.result.length);
+        response.print = "records retrieved";
         console.log("\tACTION: get --> succeed.");
     } catch(err) {
         response.print = err.message;
