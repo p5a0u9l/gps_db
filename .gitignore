@@ -2,3 +2,4 @@ node_modules/
 .gps_db_client_key
 *.db
 gps_db_fetch.json
+*pem

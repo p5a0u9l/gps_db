@@ -125,6 +125,10 @@ The system is powered-up at the beginning of a trip by connecting to a battery a
 ## Data Download
 At the end of each day, the system is connected to a home network via a USB Wi-Fi adapter. A second, very simple `systemd` service is enabled, which listens for a network connection event. On connection, it synchronizes any on-board GPS logs with a remote server running on [AWS](https://aws.amazon.com/).
 
+## Sample Visualization
+
+The following image shows a trip from Maple Valley to Kent colorized by speed.
+
 ![sample trip](sample_trip.png)
 
 # Project Review
